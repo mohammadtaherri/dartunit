@@ -1,7 +1,4 @@
-
-import 'package:test/test.dart' as test;
-import 'package:clean_test/src/group/test_group.dart';
-import 'package:meta/meta.dart';
+part of clean_test;
 
 abstract class RootTestGroup extends TestGroup {
   RootTestGroup({this.group}) : super(groupDescription: '');

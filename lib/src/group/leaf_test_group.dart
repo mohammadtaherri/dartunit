@@ -1,6 +1,4 @@
-
-
-import 'package:clean_test/src/group/test_group.dart';
+part of clean_test;
 
 abstract class LeafTestGroup extends TestGroup {
   LeafTestGroup({

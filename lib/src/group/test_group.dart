@@ -1,6 +1,4 @@
-import 'package:meta/meta.dart';
-import 'package:test/test.dart' as test;
-import '../test/test.dart';
+part of clean_test;
 
 abstract class TestGroup {
   TestGroup({

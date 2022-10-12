@@ -1,4 +1,4 @@
-import 'package:test/test.dart' as test;
+part of clean_test;
 
 typedef TestFunction = dynamic Function();
 typedef VoidCallback = void Function();

@@ -1,5 +1,4 @@
-import 'package:clean_test/src/group/test_group.dart';
-import 'package:meta/meta.dart';
+part of clean_test;
 
 abstract class BranchTestGroup extends TestGroup {
   BranchTestGroup({
