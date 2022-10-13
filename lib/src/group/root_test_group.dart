@@ -1,9 +1,9 @@
 part of clean_test;
 
 abstract class RootTestGroup extends TestGroup {
-  RootTestGroup({this.group}) : super(groupDescription: '');
+  RootTestGroup({this.groups = const []}) : super(groupDescription: '');
 
-  final TestGroup? group;
+  final List<TestGroup> groups;
 
   @override
   @protected
@@ -24,8 +24,10 @@ abstract class RootTestGroup extends TestGroup {
   @override
   @protected
   void runGroup() {
-    group?.parent = this;
-    group?.call();
+    for (TestGroup g in groups) {
+      g.parent = this;
+      g.call();
+    }
   }
 
   @protected
