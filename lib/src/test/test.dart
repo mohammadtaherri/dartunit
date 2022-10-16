@@ -4,17 +4,16 @@ typedef TestFunction = dynamic Function();
 typedef VoidCallback = void Function();
 
 class TestContainer {
-  final Map<String, Test> _descToTest = <String, Test>{};
+  final List<String> _descs = List.empty(growable: true);
+  final List<Test> _tests = List.empty(growable: true);
 
   void operator []=(String desc, Test test) {
-    _descToTest.putIfAbsent(desc, () => test);
+    _descs.add(desc);
+    _tests.add(test);
   }
 
   VoidCallback? operator [](String desc) {
-    Test? t = _descToTest[desc];
-
-    if (t == null) 
-      return null;
+    Test? t = _tests[_descs.indexOf(desc)];
 
     return () {
       TestFunction func = t.body;
@@ -32,7 +31,8 @@ class TestContainer {
   }
 
   void forEach(void Function(String desc) action) {
-    _descToTest.forEach((key, value) => action(key));
+    for(String desc in _descs)
+      action(desc);
   }
 }
 
