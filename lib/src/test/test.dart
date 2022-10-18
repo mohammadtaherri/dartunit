@@ -30,15 +30,27 @@ class TestContainer {
     };
   }
 
-  void addAll(Map<String, Test> descriptionToTest){
-    for(var desc in descriptionToTest.keys)
-      this[desc] = descriptionToTest[desc]!;
+  void add(Test test){
+    this[_extractFunctionName(test.body)] = test;
+  }
+
+  void addAll(List<Test> tests){
+    for(var test in tests)
+      add(test);
   }
 
   void forEach(void Function(String desc) action) {
     for(String desc in _descs)
       action(desc);
   }
+
+  String _extractFunctionName(Function function) {
+  String functionToString = function.toString();
+  return functionToString.substring(
+    functionToString.indexOf('\'') + 1,
+    functionToString.lastIndexOf('\''),
+  );
+}
 }
 
 class Test {
