@@ -30,6 +30,11 @@ class TestContainer {
     };
   }
 
+  void addAll(Map<String, Test> descriptionToTest){
+    for(var desc in descriptionToTest.keys)
+      this[desc] = descriptionToTest[desc]!;
+  }
+
   void forEach(void Function(String desc) action) {
     for(String desc in _descs)
       action(desc);
