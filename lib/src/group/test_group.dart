@@ -2,7 +2,7 @@ part of clean_test;
 
 abstract class TestGroup {
   TestGroup({
-    required this.groupDescription,
+    this.groupDescription,
     this.groupConfig,
   }) {
     _testContainer = TestContainer();
@@ -10,7 +10,7 @@ abstract class TestGroup {
   }
 
   TestGroup? parent;
-  final String groupDescription;
+  final String? groupDescription;
   final TestConfig? groupConfig;
   late final TestContainer _testContainer;
 
@@ -19,7 +19,7 @@ abstract class TestGroup {
   @protected
   void run() {
     test.group(
-      groupDescription,
+      groupDescription ?? runtimeType.toString(),
       () {
         test.setUp(() => setUp());
 

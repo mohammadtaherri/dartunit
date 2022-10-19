@@ -2,10 +2,7 @@ part of clean_test;
 
 abstract class RootTestGroup extends BranchTestGroup {
   RootTestGroup({List<TestGroup> groups = const []})
-      : super(
-          groups: groups,
-          groupDescription: '',
-        );
+      : super(groups: groups);
 
   @override
   @protected

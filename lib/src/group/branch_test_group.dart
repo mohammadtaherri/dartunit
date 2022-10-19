@@ -2,7 +2,7 @@ part of clean_test;
 
 abstract class BranchTestGroup extends TestGroup {
   BranchTestGroup({
-    required super.groupDescription,
+    super.groupDescription,
     required this.groups,
     super.groupConfig,
   });
