@@ -1,4 +1,4 @@
-part of clean_test;
+part of test_group;
 
 abstract class RootTestGroup extends BranchTestGroup {
   RootTestGroup({List<TestGroup> groups = const []})

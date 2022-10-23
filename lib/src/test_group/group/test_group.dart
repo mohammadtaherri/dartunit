@@ -1,4 +1,4 @@
-part of clean_test;
+part of test_group;
 
 abstract class TestGroup {
   TestGroup({
