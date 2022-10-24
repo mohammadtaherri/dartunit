@@ -30,7 +30,7 @@ class LibraryTestSuiteFactory implements TestSuiteFactory{
       );
 
     return TestSuiteObject(
-      config: TestConfig(description: libraryName),
+      config: TestConfig(description: ''),
       testCaseObjects: suites,
     );
   }
