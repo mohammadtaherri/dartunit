@@ -11,12 +11,11 @@ extension SymbolEx on Symbol{
 }
 
 extension LibraryMirrorEx on LibraryMirror {
-
   List<ClassMirror> get rootTestCases {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for(final declaration in declarations.values)
-      if(declaration.isRootTestCaseClass)
+    for (final declaration in declarations.values)
+      if (declaration.isRootTestCaseClass)
         classes.add(declaration as ClassMirror);
 
     return classes;
@@ -25,12 +24,12 @@ extension LibraryMirrorEx on LibraryMirror {
   List<ClassMirror> get subTestCases {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for(final declaration in declarations.values)
-      if(declaration.isSubTestCaseClass)
+    for (final declaration in declarations.values)
+      if (declaration.isSubTestCaseClass)
         classes.add(declaration as ClassMirror);
 
     return classes;
-  } 
+  }
 }
 
 extension DeclarationMirrorEX on DeclarationMirror{
@@ -129,7 +128,6 @@ extension DeclarationMirrorEX on DeclarationMirror{
 
     return null;
   }
-
 }
 
 extension ClassMirrorEX on ClassMirror {
@@ -182,26 +180,22 @@ extension ClassMirrorEX on ClassMirror {
 
     return superclass?.reflectedType == parent.reflectedType;
   }
-  
 }
 
-extension ClassMirrorListEx on List<ClassMirror>{
-
+extension ClassMirrorListEx on List<ClassMirror> {
   List<ClassMirror> of(ClassMirror parent) {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for(final classMirror in this)
-      if(classMirror.isSubTypeOf(parent))
-        classes.add(classMirror);
+    for (final classMirror in this)
+      if (classMirror.isSubTypeOf(parent)) classes.add(classMirror);
 
     return classes;
   }
 }
 
 
-extension InstanceMirrorEX on InstanceMirror{
-
-  dynamic getFieldByName(String name){
+extension InstanceMirrorEX on InstanceMirror {
+  dynamic getFieldByName(String name) {
     return getField(Symbol(name)).reflectee;
   }
 }
