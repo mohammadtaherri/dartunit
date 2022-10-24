@@ -7,12 +7,12 @@ typedef SetUpCallback = Callback;
 typedef TearDownCallback = Callback;
 typedef TestCallback = Callback;
 
-abstract class TestCaseObject{
+abstract class TestCaseObjectBase{
   void call();
 }
 
-class SingleTestCaseObject extends TestCaseObject {
-  SingleTestCaseObject({
+class TestCaseObject extends TestCaseObjectBase {
+  TestCaseObject({
     required this.onSetUp,
     required this.onTest,
     required this.config,
@@ -43,13 +43,13 @@ class SingleTestCaseObject extends TestCaseObject {
   }
 }
 
-class SuiteTestCaseObject extends TestCaseObject {
-  SuiteTestCaseObject({
+class TestSuiteObject extends TestCaseObjectBase {
+  TestSuiteObject({
     required this.config,
     this.testCaseObjects = const [],
   });
 
-  final List<TestCaseObject> testCaseObjects;
+  final List<TestCaseObjectBase> testCaseObjects;
   final TestConfig config;
 
   @override

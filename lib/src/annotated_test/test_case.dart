@@ -21,9 +21,9 @@ class TestCaseClass {
     subClasses.add(subClass);
   }
 
-  TestCaseObject createSuiteTestCaseObject(){
+  TestCaseObjectBase createSuiteTestCaseObject(){
 
-    final List<TestCaseObject> objects = List.empty(growable: true);
+    final List<TestCaseObjectBase> objects = List.empty(growable: true);
 
     for(final testMirror in selfMirror.tests)
       objects.add(_createSingleTestCaseObject(testMirror));
@@ -32,13 +32,13 @@ class TestCaseClass {
       objects.add(subClass.createSuiteTestCaseObject());
 
 
-    return SuiteTestCaseObject(
+    return TestSuiteObject(
       testCaseObjects: objects,
       config: selfMirror.extractTestConfigIfPossible()!,
     );
   }
 
-  TestCaseObject _createSingleTestCaseObject(MethodMirror testMirror){
+  TestCaseObjectBase _createSingleTestCaseObject(MethodMirror testMirror){
     late final InstanceMirror selfInstance;
     
     Future<void> onSetUp()async{
@@ -56,7 +56,7 @@ class TestCaseClass {
       await _invokeTearDown(selfInstance);
     }
  
-    return SingleTestCaseObject(
+    return TestCaseObject(
       onSetUp: onSetUp,  
       onTest: onTest,
       onTearDown: onTearDown,
