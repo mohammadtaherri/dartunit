@@ -1,8 +1,11 @@
 
 import 'package:test/test.dart';
+
 import 'test_config.dart';
 
+
 typedef AsyncCallback = Future<void> Function();
+
 abstract class TestCaseObjectBase{
   void call();
 }
@@ -55,7 +58,6 @@ class TestSuiteObject extends TestCaseObjectBase {
   @override
   void call() {
     dynamic body(){
-      
       setUpAll(() async{
         await onSetUpAll?.call();
       });
