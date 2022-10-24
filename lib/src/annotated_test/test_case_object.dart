@@ -12,71 +12,77 @@ abstract class TestCaseObjectBase{
 
 class TestCaseObject extends TestCaseObjectBase {
   TestCaseObject({
-    required this.onSetUp,
-    required this.onTest,
-    required this.config,
-    this.onTearDown,
-  });
+    required TestConfig config,
+    required AsyncCallback onSetUp,
+    required AsyncCallback onTest,
+    AsyncCallback? onTearDown,
+  })  : _config = config,
+        _onSetUp = onSetUp,
+        _onTest = onTest,
+        _onTearDown = onTearDown;
 
-  final AsyncCallback onSetUp;
-  final AsyncCallback onTest;
-  final AsyncCallback? onTearDown;
-  final TestConfig config;
-
+  final TestConfig _config;
+  final AsyncCallback _onSetUp;
+  final AsyncCallback _onTest;
+  final AsyncCallback? _onTearDown;
+  
   @override
   void call() {
     dynamic body() async{
-      await onSetUp.call();
-      await onTest.call();
-      await onTearDown?.call();
+      await _onSetUp.call();
+      await _onTest.call();
+      await _onTearDown?.call();
     }
 
     test(
-      config.description,
+      _config.description,
       body,
-      skip: config.skip,
-      retry: config.retry,
-      onPlatform: config.onPlatform,
-      testOn: config.testOn,
+      skip: _config.skip,
+      retry: _config.retry,
+      onPlatform: _config.onPlatform,
+      testOn: _config.testOn,
     );
   }
 }
 
 class TestSuiteObject extends TestCaseObjectBase {
   TestSuiteObject({
-    required this.config,
-    this.testCaseObjects = const [],
-    this.onSetUpAll,
-    this.onTearDownAll,
-  });
+    required TestConfig config,
+    List<TestCaseObjectBase> testCaseObjects = const [],
+    AsyncCallback? onSetUpAll,
+    AsyncCallback? onTearDownAll,
+  })  : _config = config,
+        _testCaseObjects = testCaseObjects,
+        _onSetUpAll = onSetUpAll,
+        _onTearDownAll = onTearDownAll;
 
-  final List<TestCaseObjectBase> testCaseObjects;
-  final AsyncCallback? onSetUpAll;
-  final AsyncCallback? onTearDownAll;
-  final TestConfig config;
-
+  final TestConfig _config;
+  final List<TestCaseObjectBase> _testCaseObjects;
+  final AsyncCallback? _onSetUpAll;
+  final AsyncCallback? _onTearDownAll;
+  
   @override
   void call() {
     dynamic body(){
       setUpAll(() async{
-        await onSetUpAll?.call();
+        await _onSetUpAll?.call();
       });
 
-      for (final object in testCaseObjects) 
+      for (final object in _testCaseObjects) 
         object.call();
 
       tearDownAll(() async{
-        await onTearDownAll?.call();
+        await _onTearDownAll?.call();
       });
     }
 
     group(
-      config.description,
+      _config.description,
       body,
-      skip: config.skip,
-      retry: config.retry,
-      testOn: config.testOn,
-      onPlatform: config.onPlatform,
+      skip: _config.skip,
+      retry: _config.retry,
+      testOn: _config.testOn,
+      onPlatform: _config.onPlatform,
     );
   }
 }
