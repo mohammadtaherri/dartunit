@@ -20,17 +20,14 @@ class LibraryTestSuiteFactory implements TestSuiteFactory {
   TestSuiteObject createSuite() {
     MirrorSystem mirrorSystem = currentMirrorSystem();
     LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(_libraryName));
-    final testCaseMirrorFactory = TestCaseMirrorFactory();
     final List<TestSuiteObject> suites = List.empty(growable: true);
 
     for (final root in libMirror.rootTestCases)
       suites.add(
-        testCaseMirrorFactory
-            .create(
-              root,
-              libMirror.subTestCases,
-            )
-            .createSuite(),
+        TestCaseMirror.create(
+          root,
+          libMirror.subTestCases,
+        ).createSuite(),
       );
 
     return TestSuiteObject(

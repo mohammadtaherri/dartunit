@@ -6,7 +6,20 @@ import './test_case_object.dart';
 import 'test_suite_factory.dart';
 
 class TestCaseMirror implements TestSuiteFactory{
-  TestCaseMirror(ClassMirror selfMirror)
+
+  factory TestCaseMirror.create(
+    ClassMirror rooTestCase,
+    List<ClassMirror> allSubTestCases,
+  ) {
+    TestCaseMirror testCase = TestCaseMirror._(rooTestCase);
+
+    for (final sub in allSubTestCases.of(rooTestCase))
+      testCase.addChild(TestCaseMirror.create(sub, allSubTestCases));
+
+    return testCase;
+  }
+
+  TestCaseMirror._(ClassMirror selfMirror)
       : _selfMirror = selfMirror,
         _children = List.empty(growable: true),
         _setUpMirror = selfMirror.setUp,
@@ -99,19 +112,3 @@ class TestCaseMirror implements TestSuiteFactory{
   } 
 }
 
-
-class TestCaseMirrorFactory {
-  const TestCaseMirrorFactory();
-
-  TestCaseMirror create(
-    ClassMirror selfMirror,
-    List<ClassMirror> allSubTestCases,
-  ) {
-    TestCaseMirror testCase = TestCaseMirror(selfMirror);
-
-    for (final sub in allSubTestCases.of(selfMirror))
-      testCase.addChild(create(sub, allSubTestCases));
-
-    return testCase;
-  }
-}
