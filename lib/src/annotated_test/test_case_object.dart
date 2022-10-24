@@ -6,11 +6,11 @@ import 'test_config.dart';
 
 typedef AsyncCallback = Future<void> Function();
 
-abstract class TestCaseObjectBase{
+abstract class TestCommand{
   void call();
 }
 
-class TestCaseObject extends TestCaseObjectBase {
+class TestCaseObject extends TestCommand {
   TestCaseObject({
     required TestConfig config,
     required AsyncCallback onSetUp,
@@ -45,10 +45,10 @@ class TestCaseObject extends TestCaseObjectBase {
   }
 }
 
-class TestSuiteObject extends TestCaseObjectBase {
+class TestSuiteObject extends TestCommand {
   TestSuiteObject({
     required TestConfig config,
-    List<TestCaseObjectBase> testCaseObjects = const [],
+    List<TestCommand> testCaseObjects = const [],
     AsyncCallback? onSetUpAll,
     AsyncCallback? onTearDownAll,
   })  : _config = config,
@@ -57,7 +57,7 @@ class TestSuiteObject extends TestCaseObjectBase {
         _onTearDownAll = onTearDownAll;
 
   final TestConfig _config;
-  final List<TestCaseObjectBase> _testCaseObjects;
+  final List<TestCommand> _testCaseObjects;
   final AsyncCallback? _onSetUpAll;
   final AsyncCallback? _onTearDownAll;
   

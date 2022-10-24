@@ -87,7 +87,7 @@ class TestSuiteFactoryForClass implements TestSuiteFactory{
             .delegate(Invocation.method(_tearDownAllMirror!.simpleName, []));
     }
 
-    final List<TestCaseObjectBase> objects = List.empty(growable: true);
+    final List<TestCommand> objects = List.empty(growable: true);
 
     for (final testMirror in _selfMirror.tests)
       objects.add(_createTestCaseObject(testMirror));
@@ -102,7 +102,7 @@ class TestSuiteFactoryForClass implements TestSuiteFactory{
     );
   }
 
-  TestCaseObjectBase _createTestCaseObject(MethodMirror testMirror){
+  TestCaseObject _createTestCaseObject(MethodMirror testMirror){
     late final InstanceMirror selfInstance;
     
     Future<void> onSetUp() async{
