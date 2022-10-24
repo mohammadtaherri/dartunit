@@ -1,6 +1,4 @@
 
-import 'dart:mirrors';
-
 import 'test_suite_factory.dart';
 
 void runTestsInLibrary(String libraryName) {
