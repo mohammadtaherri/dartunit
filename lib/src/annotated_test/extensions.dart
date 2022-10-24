@@ -1,6 +1,6 @@
 
 import 'dart:mirrors';
-import './annotation.dart';
+import 'annotations.dart';
 import './test_config.dart';
 
 extension SymbolEx on Symbol{
