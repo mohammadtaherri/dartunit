@@ -11,14 +11,15 @@ abstract class TestSuiteFactory{
 }
 
 class LibraryTestSuiteFactory implements TestSuiteFactory {
-  LibraryTestSuiteFactory({required this.libraryName});
+  LibraryTestSuiteFactory({required String libraryName})
+      : _libraryName = libraryName;
 
-  final String libraryName;
+  final String _libraryName;
 
   @override
   TestSuiteObject createSuite() {
     MirrorSystem mirrorSystem = currentMirrorSystem();
-    LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(libraryName));
+    LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(_libraryName));
     final testCaseMirrorFactory = TestCaseMirrorFactory();
     final List<TestSuiteObject> suites = List.empty(growable: true);
 
