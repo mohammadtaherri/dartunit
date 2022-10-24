@@ -30,8 +30,8 @@ class CompositTestCase implements TestSuiteFactory{
     for(final testMirror in selfMirror.tests)
       objects.add(_createTestCaseObject(testMirror));
 
-    for(final subClass in children)
-      objects.add(subClass.createSuite());
+    for(final child in children)
+      objects.add(child.createSuite());
 
 
     return TestSuiteObject(
@@ -63,7 +63,6 @@ class CompositTestCase implements TestSuiteFactory{
       onTearDown: onTearDown,
       config: testMirror.extractTestConfigIfPossible()!,
     );
-      
   }
 
   Future<void> _invokeSetUp(InstanceMirror instanceMirror) async{

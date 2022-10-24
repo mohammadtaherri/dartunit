@@ -23,7 +23,7 @@ class LibraryTestSuiteFactory implements TestSuiteFactory{
 
     for (final root in libMirror.rootTestCases)
       suites.add(
-        ClassTestSuiteFactory(
+        CompositeTestCaseTestSuiteFactory(
           rootTestCase: root,
           allSubTestCases: libMirror.allSubTestCases,
         ).createSuite(),
@@ -37,9 +37,9 @@ class LibraryTestSuiteFactory implements TestSuiteFactory{
 }
 
 
-class ClassTestSuiteFactory implements TestSuiteFactory{
+class CompositeTestCaseTestSuiteFactory implements TestSuiteFactory{
 
-  ClassTestSuiteFactory({
+  CompositeTestCaseTestSuiteFactory({
     required this.rootTestCase,
     this.allSubTestCases = const [],
   });
