@@ -98,3 +98,19 @@ class TestCaseMirror implements TestSuiteFactory{
   } 
 }
 
+
+class TestCaseMirrorFactory {
+  const TestCaseMirrorFactory();
+
+  TestCaseMirror create(
+    ClassMirror selfMirror,
+    List<ClassMirror> allSubTestCases,
+  ) {
+    TestCaseMirror testCase = TestCaseMirror(selfMirror);
+
+    for (final sub in allSubTestCases.of(selfMirror))
+      testCase.addChild(create(sub, allSubTestCases));
+
+    return testCase;
+  }
+}
