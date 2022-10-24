@@ -30,13 +30,6 @@ class TestCaseMirror implements TestSuiteFactory{
 
   @override
   TestSuiteObject createSuite() {
-    final List<TestCaseObjectBase> objects = List.empty(growable: true);
-
-    for(final testMirror in _selfMirror.tests)
-      objects.add(_createTestCaseObject(testMirror));
-
-    for(final child in _children)
-      objects.add(child.createSuite());
 
     Future<void> onSetUpAll() async{
       if(_setUpAllMirror != null)
@@ -47,6 +40,14 @@ class TestCaseMirror implements TestSuiteFactory{
       if(_tearDownAllMirror != null)
         await _selfMirror.delegate(Invocation.method(_tearDownAllMirror!.simpleName, []));
     }
+    
+    final List<TestCaseObjectBase> objects = List.empty(growable: true);
+
+    for(final testMirror in _selfMirror.tests)
+      objects.add(_createTestCaseObject(testMirror));
+
+    for(final child in _children)
+      objects.add(child.createSuite());
 
     return TestSuiteObject(
       testCaseObjects: objects,
