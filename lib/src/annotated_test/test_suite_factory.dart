@@ -25,7 +25,7 @@ class LibraryTestSuiteFactory implements TestSuiteFactory{
       suites.add(
         CompositeTestCaseTestSuiteFactory(
           rootTestCase: root,
-          allSubTestCases: libMirror.allSubTestCases,
+          subTestCases: libMirror.subTestCases,
         ).createSuite(),
       );
 
@@ -41,11 +41,11 @@ class CompositeTestCaseTestSuiteFactory implements TestSuiteFactory{
 
   CompositeTestCaseTestSuiteFactory({
     required this.rootTestCase,
-    this.allSubTestCases = const [],
+    this.subTestCases = const [],
   });
 
   final ClassMirror rootTestCase;
-  final List<ClassMirror> allSubTestCases;
+  final List<ClassMirror> subTestCases;
 
   @override
   TestSuiteObject createSuite() {
@@ -55,7 +55,7 @@ class CompositeTestCaseTestSuiteFactory implements TestSuiteFactory{
   CompositTestCase _createCompositeTestCase(ClassMirror selfMirror) {
     CompositTestCase composite = CompositTestCase(selfMirror);
 
-    for (final sub in allSubTestCases.of(selfMirror))
+    for (final sub in subTestCases.of(selfMirror))
       composite.addChild(_createCompositeTestCase(sub));
 
     return composite;

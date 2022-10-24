@@ -22,7 +22,7 @@ extension LibraryMirrorEx on LibraryMirror {
     return classes;
   }
 
-  List<ClassMirror> get allSubTestCases {
+  List<ClassMirror> get subTestCases {
     List<ClassMirror> classes = List.empty(growable: true);
 
     for(final declaration in declarations.values)
@@ -84,7 +84,6 @@ extension DeclarationMirrorEX on DeclarationMirror{
   bool get isMethod => this is MethodMirror;
   bool get isInstanceMethod => !isStaticMethod;
   bool get isStaticMethod => isMethod && (this as MethodMirror).isStatic;
-   
 
   bool get hasRootAnnotation => _hasAnnotationOfType<Root>();
   bool get hasTestCaseAnnotation => _hasAnnotationOfType<TestCase>();
@@ -95,9 +94,6 @@ extension DeclarationMirrorEX on DeclarationMirror{
   bool get hasTearDownAllAnnotation => _hasAnnotationOfType<TearDownAll>();
 
   bool _hasAnnotationOfType<T>(){
-    if(!hasAnnotation)
-      return false;
-
     for(final annotation in metadata)
       if(annotation.type.reflectedType == T)
         return true;
@@ -109,14 +105,14 @@ extension DeclarationMirrorEX on DeclarationMirror{
     if(!hasTestAnnotation && !hasTestCaseAnnotation)
       return null;
     
-    InstanceMirror annotation = _getTestConfigSurroundedAnnotation()!;
+    InstanceMirror instance = _getTestConfigSurroundedAnnotation()!;
 
     return TestConfig(
-      description: annotation.getFieldByName('description') ?? simpleName.extractName(),
-      skip: annotation.getFieldByName('skip'),
-      retry: annotation.getFieldByName('retry'),
-      testOn: annotation.getFieldByName('testOn'),
-      onPlatform: annotation.getFieldByName('onPlatform'),
+      description: instance.getFieldByName('description') ?? simpleName.extractName(),
+      skip: instance.getFieldByName('skip'),
+      retry: instance.getFieldByName('retry'),
+      testOn: instance.getFieldByName('testOn'),
+      onPlatform: instance.getFieldByName('onPlatform'),
     );
   }
 
