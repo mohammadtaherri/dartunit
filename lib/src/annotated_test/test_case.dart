@@ -9,7 +9,7 @@ abstract class TestSuiteFactoryBase{
   TestSuiteObject createSuite();
 }
 
-class TestSuiteFactory{
+class TestSuiteFactory implements TestSuiteFactoryBase{
   TestSuiteFactory({
     required this.description,
     required this.rootTestCases,
@@ -20,6 +20,7 @@ class TestSuiteFactory{
   final List<ClassMirror> rootTestCases;
   final List<ClassMirror> allSubTestCases;
 
+  @override
   TestSuiteObject createSuite(){
     final List<TestCaseClass> testCaseClasses = List.empty(growable: true);
     final List<TestSuiteObject> suites = List.empty(growable: true);
