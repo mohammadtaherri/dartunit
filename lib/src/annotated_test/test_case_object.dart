@@ -1,12 +1,8 @@
 
 import 'package:test/test.dart';
-import './test_config.dart';
+import 'test_config.dart';
 
-typedef Callback = Future<void> Function();
-typedef SetUpCallback = Callback;
-typedef TearDownCallback = Callback;
-typedef TestCallback = Callback;
-
+typedef AsyncCallback = Future<void> Function();
 abstract class TestCaseObjectBase{
   void call();
 }
@@ -19,9 +15,9 @@ class TestCaseObject extends TestCaseObjectBase {
     this.onTearDown,
   });
 
-  final SetUpCallback onSetUp;
-  final TestCallback onTest;
-  final TearDownCallback? onTearDown;
+  final AsyncCallback onSetUp;
+  final AsyncCallback onTest;
+  final AsyncCallback? onTearDown;
   final TestConfig config;
 
   @override
