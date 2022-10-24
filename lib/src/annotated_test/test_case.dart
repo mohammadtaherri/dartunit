@@ -22,9 +22,9 @@ class TestSuiteFactory implements TestSuiteFactoryBase{
 
   @override
   TestSuiteObject createSuite(){
-    final List<TestCaseClass> testCaseClasses = List.empty(growable: true);
+    final List<CompositTestCase> testCaseClasses = List.empty(growable: true);
     final List<TestSuiteObject> suites = List.empty(growable: true);
-    final testCaseClassFactory = TestCaseClassFactory(allSubTestCases);
+    final testCaseClassFactory = CompositeTestCaseFactory(allSubTestCases);
 
     for (final root in rootTestCases) 
       testCaseClasses.add(testCaseClassFactory.createFor(root));
@@ -39,40 +39,40 @@ class TestSuiteFactory implements TestSuiteFactoryBase{
   }
 }
 
-class TestCaseClassFactory{
+class CompositeTestCaseFactory{
 
-  TestCaseClassFactory(
+  CompositeTestCaseFactory(
     this.allSubTestCases,
   );
 
   final List<ClassMirror> allSubTestCases;
 
-  TestCaseClass createFor(ClassMirror selfMirror) {
-    TestCaseClass testCaseClass = TestCaseClass(selfMirror);
+  CompositTestCase createFor(ClassMirror selfMirror) {
+    CompositTestCase testCaseClass = CompositTestCase(selfMirror);
 
     for (final sub in allSubTestCases.of(selfMirror))
-      testCaseClass.addSubClass(createFor(sub));
+      testCaseClass.addChild(createFor(sub));
 
     return testCaseClass;
   }
 }
 
-class TestCaseClass implements TestSuiteFactoryBase{
-  TestCaseClass(this.selfMirror)
-      : subClasses = List.empty(growable: true),
+class CompositTestCase implements TestSuiteFactoryBase{
+  CompositTestCase(this.selfMirror)
+      : children = List.empty(growable: true),
         setUpMirror = selfMirror.setUp,
         tearDownMirror = selfMirror.tearDown;
 
   final ClassMirror selfMirror;
   late final MethodMirror? setUpMirror;
   late final MethodMirror? tearDownMirror;
-  final List<TestCaseClass> subClasses;
-  TestCaseClass? superClass;
+  final List<CompositTestCase> children;
+  CompositTestCase? parent;
   
 
-  void addSubClass(TestCaseClass subClass){
-    subClass.superClass = this;
-    subClasses.add(subClass);
+  void addChild(CompositTestCase child){
+    child.parent = this;
+    children.add(child);
   }
 
   @override
@@ -82,7 +82,7 @@ class TestCaseClass implements TestSuiteFactoryBase{
     for(final testMirror in selfMirror.tests)
       objects.add(_createTestCaseObject(testMirror));
 
-    for(final subClass in subClasses)
+    for(final subClass in children)
       objects.add(subClass.createSuite());
 
 
@@ -120,7 +120,7 @@ class TestCaseClass implements TestSuiteFactoryBase{
 
   Future<void> _invokeSetUp(InstanceMirror instanceMirror) async{
 
-    await superClass?._invokeSetUp(instanceMirror);
+    await parent?._invokeSetUp(instanceMirror);
 
     if(setUpMirror != null)
       await instanceMirror.delegate(Invocation.method(setUpMirror!.simpleName, []));
@@ -131,7 +131,7 @@ class TestCaseClass implements TestSuiteFactoryBase{
     if(tearDownMirror != null)
       await instanceMirror.delegate(Invocation.method(tearDownMirror!.simpleName, []));
   
-    await superClass?._invokeTearDown(instanceMirror);
+    await parent?._invokeTearDown(instanceMirror);
   }
   
 }
