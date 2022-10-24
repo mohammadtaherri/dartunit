@@ -9,8 +9,8 @@ abstract class TestSuiteFactory{
   TestSuiteObject createSuite();
 }
 
-class LibraryTestSuiteFactory implements TestSuiteFactory {
-  LibraryTestSuiteFactory({required String libraryName})
+class TestSuiteFactoryForLibrary implements TestSuiteFactory {
+  TestSuiteFactoryForLibrary({required String libraryName})
       : _libraryName = libraryName;
 
   final String _libraryName;
