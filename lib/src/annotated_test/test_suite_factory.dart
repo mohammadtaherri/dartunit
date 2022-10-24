@@ -1,38 +1,63 @@
+
 import 'dart:mirrors';
+
 import 'test_case.dart';
 import 'test_case_object.dart';
+import 'extensions.dart';
 import 'test_config.dart';
 
-abstract class TestSuiteFactoryBase{
+abstract class TestSuiteFactory{
   TestSuiteObject createSuite();
 }
 
-class TestSuiteFactory implements TestSuiteFactoryBase{
-  TestSuiteFactory({
-    required this.description,
-    required this.rootTestCases,
-    required this.allSubTestCases,
+class LibraryTestSuiteFactory implements TestSuiteFactory{
+  LibraryTestSuiteFactory({required this.libraryName});
+
+  final String libraryName;
+  
+  @override
+  TestSuiteObject createSuite() {
+    MirrorSystem mirrorSystem = currentMirrorSystem();
+    LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(libraryName));
+    final List<TestSuiteObject> suites = List.empty(growable: true);
+
+    for (final root in libMirror.rootTestCases)
+      suites.add(
+        ClassTestSuiteFactory(
+          rootTestCase: root,
+          allSubTestCases: libMirror.allSubTestCases,
+        ).createSuite(),
+      );
+
+    return TestSuiteObject(
+      config: TestConfig(description: libraryName),
+      testCaseObjects: suites,
+    );
+  }
+}
+
+
+class ClassTestSuiteFactory implements TestSuiteFactory{
+
+  ClassTestSuiteFactory({
+    required this.rootTestCase,
+    this.allSubTestCases = const [],
   });
 
-  final String description;
-  final List<ClassMirror> rootTestCases;
+  final ClassMirror rootTestCase;
   final List<ClassMirror> allSubTestCases;
 
   @override
-  TestSuiteObject createSuite(){
-    final List<CompositTestCase> testCaseClasses = List.empty(growable: true);
-    final List<TestSuiteObject> suites = List.empty(growable: true);
-    final testCaseClassFactory = CompositeTestCaseFactory(allSubTestCases);
+  TestSuiteObject createSuite() {
+    return _createCompositeTestCase(rootTestCase).createSuite();
+  }
 
-    for (final root in rootTestCases) 
-      testCaseClasses.add(testCaseClassFactory.createFor(root));
+  CompositTestCase _createCompositeTestCase(ClassMirror selfMirror) {
+    CompositTestCase composite = CompositTestCase(selfMirror);
 
-    for(final testCaseClass in testCaseClasses)
-      suites.add(testCaseClass.createSuite());
+    for (final sub in allSubTestCases.of(selfMirror))
+      composite.addChild(_createCompositeTestCase(sub));
 
-    return TestSuiteObject(
-      config: TestConfig(description: description),
-      testCaseObjects: suites,
-    );
+    return composite;
   }
 }

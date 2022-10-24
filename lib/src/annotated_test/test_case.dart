@@ -6,25 +6,8 @@ import './extensions.dart';
 import './test_case_object.dart';
 import 'test_suite_factory.dart';
 
-class CompositeTestCaseFactory{
 
-  CompositeTestCaseFactory(
-    this.allSubTestCases,
-  );
-
-  final List<ClassMirror> allSubTestCases;
-
-  CompositTestCase createFor(ClassMirror selfMirror) {
-    CompositTestCase testCaseClass = CompositTestCase(selfMirror);
-
-    for (final sub in allSubTestCases.of(selfMirror))
-      testCaseClass.addChild(createFor(sub));
-
-    return testCaseClass;
-  }
-}
-
-class CompositTestCase implements TestSuiteFactoryBase{
+class CompositTestCase implements TestSuiteFactory{
   CompositTestCase(this.selfMirror)
       : children = List.empty(growable: true),
         setUpMirror = selfMirror.setUp,
