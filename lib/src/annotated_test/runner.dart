@@ -1,7 +1,7 @@
 
 import 'dart:mirrors';
 import './extensions.dart';
-import './test_case.dart';
+import 'test_suite_factory.dart';
 
 
 void runTestsInLibrary(String libraryName) {
