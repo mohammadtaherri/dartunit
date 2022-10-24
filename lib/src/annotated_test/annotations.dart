@@ -42,3 +42,11 @@ class SetUp {
 class TearDown {
   const TearDown();
 }
+
+class SetUpAll {
+  const SetUpAll();
+}
+
+class TearDownAll {
+  const TearDownAll();
+}

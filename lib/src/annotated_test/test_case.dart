@@ -9,11 +9,15 @@ class CompositTestCase implements TestSuiteFactory{
   CompositTestCase(this.selfMirror)
       : children = List.empty(growable: true),
         setUpMirror = selfMirror.setUp,
-        tearDownMirror = selfMirror.tearDown;
+        tearDownMirror = selfMirror.tearDown,
+        setUpAllMirror = selfMirror.setUpAll,
+        tearDownAllMirror = selfMirror.tearDownAll;
 
   final ClassMirror selfMirror;
-  late final MethodMirror? setUpMirror;
-  late final MethodMirror? tearDownMirror;
+  final MethodMirror? setUpMirror;
+  final MethodMirror? tearDownMirror;
+  final MethodMirror? setUpAllMirror;
+  final MethodMirror? tearDownAllMirror;
   final List<CompositTestCase> children;
   CompositTestCase? parent;
   
@@ -33,9 +37,20 @@ class CompositTestCase implements TestSuiteFactory{
     for(final child in children)
       objects.add(child.createSuite());
 
+    Future<void> onSetUpAll() async{
+      if(setUpAllMirror != null)
+        await selfMirror.delegate(Invocation.method(setUpAllMirror!.simpleName, []));
+    }
+
+    Future<void> onTearDownAll() async{
+      if(tearDownAllMirror != null)
+        await selfMirror.delegate(Invocation.method(tearDownAllMirror!.simpleName, []));
+    }
 
     return TestSuiteObject(
       testCaseObjects: objects,
+      onSetUpAll: onSetUpAll,
+      onTearDownAll: onTearDownAll,
       config: selfMirror.extractTestConfigIfPossible()!,
     );
   }
@@ -43,17 +58,17 @@ class CompositTestCase implements TestSuiteFactory{
   TestCaseObjectBase _createTestCaseObject(MethodMirror testMirror){
     late final InstanceMirror selfInstance;
     
-    Future<void> onSetUp()async{
+    Future<void> onSetUp() async{
       selfInstance = selfMirror.newInstance(Symbol.empty, []);
 
       await _invokeSetUp(selfInstance);
     }
 
-    Future<void> onTest()async{
+    Future<void> onTest() async{
       await selfInstance.delegate(Invocation.method(testMirror.simpleName, []));
     }
 
-    Future<void> onTearDown()async{
+    Future<void> onTearDown() async{
       await _invokeTearDown(selfInstance);
     }
  

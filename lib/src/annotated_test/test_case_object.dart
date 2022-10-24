@@ -43,16 +43,29 @@ class TestSuiteObject extends TestCaseObjectBase {
   TestSuiteObject({
     required this.config,
     this.testCaseObjects = const [],
+    this.onSetUpAll,
+    this.onTearDownAll,
   });
 
   final List<TestCaseObjectBase> testCaseObjects;
+  final AsyncCallback? onSetUpAll;
+  final AsyncCallback? onTearDownAll;
   final TestConfig config;
 
   @override
   void call() {
     dynamic body(){
+      
+      setUpAll(() async{
+        await onSetUpAll?.call();
+      });
+
       for (final object in testCaseObjects) 
         object.call();
+
+      tearDownAll(() async{
+        await onTearDownAll?.call();
+      });
     }
 
     group(

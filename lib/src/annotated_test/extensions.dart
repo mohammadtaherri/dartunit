@@ -1,7 +1,7 @@
 
 import 'dart:mirrors';
 import 'annotations.dart';
-import './test_config.dart';
+import 'test_config.dart';
 
 extension SymbolEx on Symbol{
   String extractName(){
@@ -36,17 +36,17 @@ extension LibraryMirrorEx on LibraryMirror {
 extension DeclarationMirrorEX on DeclarationMirror{
 
   bool get isRootTestCaseClass =>
-      isClassMirror && 
+      isClass && 
       hasTestCaseAnnotation && 
       hasRootAnnotation;
 
   bool get isSubTestCaseClass => 
-      isClassMirror &&
+      isClass &&
       hasTestCaseAnnotation &&
       !hasRootAnnotation;
 
   bool get isTestMethod => 
-      isMethodMirror &&
+      isInstanceMethod &&
       hasTestAnnotation &&
       !hasSetUpAnnotation &&
       !hasTearDownAnnotation &&
@@ -54,7 +54,7 @@ extension DeclarationMirrorEX on DeclarationMirror{
       !hasTestCaseAnnotation;
 
   bool get isSetUpMethod => 
-      isMethodMirror &&
+      isInstanceMethod &&
       hasSetUpAnnotation &&
       !hasTestAnnotation &&
       !hasTearDownAnnotation &&
@@ -62,22 +62,37 @@ extension DeclarationMirrorEX on DeclarationMirror{
       !hasTestCaseAnnotation;
 
   bool get isTearDownMethod =>
-      isMethodMirror &&
+      isInstanceMethod &&
       hasTearDownAnnotation &&
       !hasTestAnnotation &&
       !hasSetUpAnnotation &&
       !hasRootAnnotation &&
       !hasTestCaseAnnotation;
 
+  bool get isSetUpAllMethod =>
+      isStaticMethod &&
+      hasSetUpAllAnnotation &&
+      !hasTearDownAllAnnotation;
+
+  bool get isTearDownAllMethod => 
+      isStaticMethod &&
+      hasTearDownAllAnnotation &&
+      !hasSetUpAllAnnotation;
+
   bool get hasAnnotation => metadata.isNotEmpty;
-  bool get isClassMirror => this is ClassMirror;
-  bool get isMethodMirror => this is MethodMirror;
+  bool get isClass => this is ClassMirror;
+  bool get isMethod => this is MethodMirror;
+  bool get isInstanceMethod => !isStaticMethod;
+  bool get isStaticMethod => isMethod && (this as MethodMirror).isStatic;
+   
 
   bool get hasRootAnnotation => _hasAnnotationOfType<Root>();
   bool get hasTestCaseAnnotation => _hasAnnotationOfType<TestCase>();
   bool get hasTestAnnotation => _hasAnnotationOfType<Test>();
   bool get hasSetUpAnnotation => _hasAnnotationOfType<SetUp>();
   bool get hasTearDownAnnotation => _hasAnnotationOfType<TearDown>();
+  bool get hasSetUpAllAnnotation => _hasAnnotationOfType<SetUpAll>();
+  bool get hasTearDownAllAnnotation => _hasAnnotationOfType<TearDownAll>();
 
   bool _hasAnnotationOfType<T>(){
     if(!hasAnnotation)
@@ -106,7 +121,7 @@ extension DeclarationMirrorEX on DeclarationMirror{
   }
 
   InstanceMirror? _getTestConfigSurroundedAnnotation() {
-    if (!isMethodMirror && !isClassMirror) 
+    if (!isMethod && !isClass) 
       return null;
 
     if (!hasAnnotation) 
@@ -149,8 +164,24 @@ extension ClassMirrorEX on ClassMirror {
     return null;
   }
 
+  MethodMirror? get setUpAll {
+    for (final declaration in declarations.values)
+      if(declaration.isSetUpAllMethod)
+        return declaration as MethodMirror;
+
+    return null;
+  }
+
+  MethodMirror? get tearDownAll {
+    for (final declaration in declarations.values)
+      if(declaration.isTearDownAllMethod)
+        return declaration as MethodMirror;
+
+    return null;
+  }
+
   bool isSubTypeOf(ClassMirror parent){
-    if(!isClassMirror)
+    if(!isClass)
       return false;
 
     return superclass?.reflectedType == parent.reflectedType;
