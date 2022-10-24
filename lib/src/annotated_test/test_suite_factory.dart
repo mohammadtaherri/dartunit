@@ -1,7 +1,7 @@
 
 import 'dart:mirrors';
 
-import 'test_case.dart';
+import 'test_case_mirror.dart';
 import 'test_case_object.dart';
 import 'extensions.dart';
 import 'test_config.dart';
@@ -52,8 +52,8 @@ class CompositeTestCaseTestSuiteFactory implements TestSuiteFactory{
     return _createCompositeTestCase(rootTestCase).createSuite();
   }
 
-  CompositTestCase _createCompositeTestCase(ClassMirror selfMirror) {
-    CompositTestCase composite = CompositTestCase(selfMirror);
+  TestCaseMirror _createCompositeTestCase(ClassMirror selfMirror) {
+    TestCaseMirror composite = TestCaseMirror(selfMirror);
 
     for (final sub in subTestCases.of(selfMirror))
       composite.addChild(_createCompositeTestCase(sub));

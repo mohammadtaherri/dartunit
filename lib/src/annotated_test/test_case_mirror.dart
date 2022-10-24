@@ -5,8 +5,8 @@ import './extensions.dart';
 import './test_case_object.dart';
 import 'test_suite_factory.dart';
 
-class CompositTestCase implements TestSuiteFactory{
-  CompositTestCase(this.selfMirror)
+class TestCaseMirror implements TestSuiteFactory{
+  TestCaseMirror(this.selfMirror)
       : children = List.empty(growable: true),
         setUpMirror = selfMirror.setUp,
         tearDownMirror = selfMirror.tearDown,
@@ -18,11 +18,11 @@ class CompositTestCase implements TestSuiteFactory{
   final MethodMirror? tearDownMirror;
   final MethodMirror? setUpAllMirror;
   final MethodMirror? tearDownAllMirror;
-  final List<CompositTestCase> children;
-  CompositTestCase? parent;
+  final List<TestCaseMirror> children;
+  TestCaseMirror? parent;
   
 
-  void addChild(CompositTestCase child){
+  void addChild(TestCaseMirror child){
     child.parent = this;
     children.add(child);
   }
