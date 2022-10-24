@@ -1,11 +1,9 @@
 
 import 'dart:mirrors';
-import 'package:clean_test/src/annotated_test/test_config.dart';
 
 import './extensions.dart';
 import './test_case_object.dart';
 import 'test_suite_factory.dart';
-
 
 class CompositTestCase implements TestSuiteFactory{
   CompositTestCase(this.selfMirror)
@@ -82,7 +80,6 @@ class CompositTestCase implements TestSuiteFactory{
       await instanceMirror.delegate(Invocation.method(tearDownMirror!.simpleName, []));
   
     await parent?._invokeTearDown(instanceMirror);
-  }
-  
+  } 
 }
 
