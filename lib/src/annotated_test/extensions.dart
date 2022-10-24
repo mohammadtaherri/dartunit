@@ -16,9 +16,8 @@ extension LibraryMirrorEx on LibraryMirror {
     List<ClassMirror> classes = List.empty(growable: true);
 
     for(final declaration in declarations.values)
-      if(declaration.isClassMirror)
-        if (declaration.hasRootAnnotation)
-          classes.add(declaration as ClassMirror);
+      if(declaration.isRootTestCaseClass)
+        classes.add(declaration as ClassMirror);
 
     return classes;
   }
@@ -27,15 +26,48 @@ extension LibraryMirrorEx on LibraryMirror {
     List<ClassMirror> classes = List.empty(growable: true);
 
     for(final declaration in declarations.values)
-      if(declaration.isClassMirror)
-        if (!declaration.hasRootAnnotation)
-          classes.add(declaration as ClassMirror);
+      if(declaration.isSubTestCaseClass)
+        classes.add(declaration as ClassMirror);
 
     return classes;
   } 
 }
 
 extension DeclarationMirrorEX on DeclarationMirror{
+
+  bool get isRootTestCaseClass =>
+      isClassMirror && 
+      hasTestCaseAnnotation && 
+      hasRootAnnotation;
+
+  bool get isSubTestCaseClass => 
+      isClassMirror &&
+      hasTestCaseAnnotation &&
+      !hasRootAnnotation;
+
+  bool get isTestMethod => 
+      isMethodMirror &&
+      hasTestAnnotation &&
+      !hasSetUpAnnotation &&
+      !hasTearDownAnnotation &&
+      !hasRootAnnotation &&
+      !hasTestCaseAnnotation;
+
+  bool get isSetUpMethod => 
+      isMethodMirror &&
+      hasSetUpAnnotation &&
+      !hasTestAnnotation &&
+      !hasTearDownAnnotation &&
+      !hasRootAnnotation &&
+      !hasTestCaseAnnotation;
+
+  bool get isTearDownMethod =>
+      isMethodMirror &&
+      hasTearDownAnnotation &&
+      !hasTestAnnotation &&
+      !hasSetUpAnnotation &&
+      !hasRootAnnotation &&
+      !hasTestCaseAnnotation;
 
   bool get hasAnnotation => metadata.isNotEmpty;
   bool get isClassMirror => this is ClassMirror;
@@ -48,9 +80,6 @@ extension DeclarationMirrorEX on DeclarationMirror{
   bool get hasTearDownAnnotation => _hasAnnotationOfType<TearDown>();
 
   bool _hasAnnotationOfType<T>(){
-    if(!isMethodMirror && !isClassMirror)
-      return false;
-
     if(!hasAnnotation)
       return false;
 
@@ -98,27 +127,24 @@ extension ClassMirrorEX on ClassMirror {
     List<MethodMirror> methods = List.empty(growable: true);
 
     for (final declaration in declarations.values)
-      if(declaration.isMethodMirror)
-        if (declaration.hasTestAnnotation)
-          methods.add(declaration as MethodMirror);
+      if(declaration.isTestMethod)
+        methods.add(declaration as MethodMirror);
 
     return methods;
   }
 
   MethodMirror? get setUp {
     for (final declaration in declarations.values)
-      if(declaration.isMethodMirror)
-        if (declaration.hasSetUpAnnotation) 
-          return declaration as MethodMirror;
+      if(declaration.isSetUpMethod)
+        return declaration as MethodMirror;
 
     return null;
   }
 
   MethodMirror? get tearDown {
     for (final declaration in declarations.values)
-      if(declaration.isMethodMirror)
-        if (declaration.hasTearDownAnnotation) 
-          return declaration as MethodMirror;
+      if(declaration.isTearDownMethod)
+        return declaration as MethodMirror;
 
     return null;
   }
