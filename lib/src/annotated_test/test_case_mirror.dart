@@ -6,52 +6,53 @@ import './test_case_object.dart';
 import 'test_suite_factory.dart';
 
 class TestCaseMirror implements TestSuiteFactory{
-  TestCaseMirror(this.selfMirror)
-      : children = List.empty(growable: true),
-        setUpMirror = selfMirror.setUp,
-        tearDownMirror = selfMirror.tearDown,
-        setUpAllMirror = selfMirror.setUpAll,
-        tearDownAllMirror = selfMirror.tearDownAll;
+  TestCaseMirror(ClassMirror selfMirror)
+      : _selfMirror = selfMirror,
+        _children = List.empty(growable: true),
+        _setUpMirror = selfMirror.setUp,
+        _tearDownMirror = selfMirror.tearDown,
+        _setUpAllMirror = selfMirror.setUpAll,
+        _tearDownAllMirror = selfMirror.tearDownAll;
 
-  final ClassMirror selfMirror;
-  final MethodMirror? setUpMirror;
-  final MethodMirror? tearDownMirror;
-  final MethodMirror? setUpAllMirror;
-  final MethodMirror? tearDownAllMirror;
-  final List<TestCaseMirror> children;
-  TestCaseMirror? parent;
+  final ClassMirror _selfMirror;
+  final MethodMirror? _setUpMirror;
+  final MethodMirror? _tearDownMirror;
+  final MethodMirror? _setUpAllMirror;
+  final MethodMirror? _tearDownAllMirror;
+  final List<TestCaseMirror> _children;
+  TestCaseMirror? _parent;
   
 
   void addChild(TestCaseMirror child){
-    child.parent = this;
-    children.add(child);
+    child._parent = this;
+    _children.add(child);
   }
 
   @override
   TestSuiteObject createSuite() {
     final List<TestCaseObjectBase> objects = List.empty(growable: true);
 
-    for(final testMirror in selfMirror.tests)
+    for(final testMirror in _selfMirror.tests)
       objects.add(_createTestCaseObject(testMirror));
 
-    for(final child in children)
+    for(final child in _children)
       objects.add(child.createSuite());
 
     Future<void> onSetUpAll() async{
-      if(setUpAllMirror != null)
-        await selfMirror.delegate(Invocation.method(setUpAllMirror!.simpleName, []));
+      if(_setUpAllMirror != null)
+        await _selfMirror.delegate(Invocation.method(_setUpAllMirror!.simpleName, []));
     }
 
     Future<void> onTearDownAll() async{
-      if(tearDownAllMirror != null)
-        await selfMirror.delegate(Invocation.method(tearDownAllMirror!.simpleName, []));
+      if(_tearDownAllMirror != null)
+        await _selfMirror.delegate(Invocation.method(_tearDownAllMirror!.simpleName, []));
     }
 
     return TestSuiteObject(
       testCaseObjects: objects,
       onSetUpAll: onSetUpAll,
       onTearDownAll: onTearDownAll,
-      config: selfMirror.extractTestConfigIfPossible()!,
+      config: _selfMirror.extractTestConfigIfPossible()!,
     );
   }
 
@@ -59,7 +60,7 @@ class TestCaseMirror implements TestSuiteFactory{
     late final InstanceMirror selfInstance;
     
     Future<void> onSetUp() async{
-      selfInstance = selfMirror.newInstance(Symbol.empty, []);
+      selfInstance = _selfMirror.newInstance(Symbol.empty, []);
 
       await _invokeSetUp(selfInstance);
     }
@@ -82,18 +83,18 @@ class TestCaseMirror implements TestSuiteFactory{
 
   Future<void> _invokeSetUp(InstanceMirror instanceMirror) async{
 
-    await parent?._invokeSetUp(instanceMirror);
+    await _parent?._invokeSetUp(instanceMirror);
 
-    if(setUpMirror != null)
-      await instanceMirror.delegate(Invocation.method(setUpMirror!.simpleName, []));
+    if(_setUpMirror != null)
+      await instanceMirror.delegate(Invocation.method(_setUpMirror!.simpleName, []));
   }
 
   Future<void> _invokeTearDown(InstanceMirror instanceMirror) async{
 
-    if(tearDownMirror != null)
-      await instanceMirror.delegate(Invocation.method(tearDownMirror!.simpleName, []));
+    if(_tearDownMirror != null)
+      await instanceMirror.delegate(Invocation.method(_tearDownMirror!.simpleName, []));
   
-    await parent?._invokeTearDown(instanceMirror);
+    await _parent?._invokeTearDown(instanceMirror);
   } 
 }
 
