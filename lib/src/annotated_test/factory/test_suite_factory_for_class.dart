@@ -1,41 +1,4 @@
-
-import 'dart:mirrors';
-
-import './command/command.dart';
-import 'extensions.dart';
-import 'test_config.dart';
-
-abstract class TestSuiteFactory{
-  TestSuiteObject createSuite();
-}
-
-class TestSuiteFactoryForLibrary implements TestSuiteFactory {
-  TestSuiteFactoryForLibrary({required String libraryName})
-      : _libraryName = libraryName;
-
-  final String _libraryName;
-
-  @override
-  TestSuiteObject createSuite() {
-    MirrorSystem mirrorSystem = currentMirrorSystem();
-    LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(_libraryName));
-    final List<TestSuiteObject> suites = List.empty(growable: true);
-
-    for (final root in libMirror.rootTestCases)
-      suites.add(
-        TestSuiteFactoryForClass.create(
-          root,
-          libMirror.subTestCases,
-        ).createSuite(),
-      );
-
-    return TestSuiteObject(
-      config: TestConfig(description: ''),
-      testCaseObjects: suites,
-    );
-  }
-}
-
+part of factory;
 
 class TestSuiteFactoryForClass implements TestSuiteFactory{
 
@@ -143,7 +106,3 @@ class TestSuiteFactoryForClass implements TestSuiteFactory{
     await _parent?._invokeTearDown(instanceMirror);
   } 
 }
-
-
-
-
