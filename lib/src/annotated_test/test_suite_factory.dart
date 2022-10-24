@@ -1,7 +1,7 @@
 
 import 'dart:mirrors';
 
-import 'test_case_object.dart';
+import './command/command.dart';
 import 'extensions.dart';
 import 'test_config.dart';
 
