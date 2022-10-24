@@ -8,13 +8,11 @@ void runTestsInLibrary(String libraryName) {
   MirrorSystem mirrorSystem = currentMirrorSystem();
   LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(libraryName));
 
-  final List<ClassMirror> rootTestCases = libMirror.rootTestCases;
-  final List<TestCaseClass> testCaseClasses = List.empty(growable: true);
-  final testCaseClassFactory = TestCaseClassFactory(libMirror.allSubTestCases);
-  
-  for (final root in rootTestCases) 
-    testCaseClasses.add(testCaseClassFactory.createFor(root));
-  
-  for(final testCaseClass in testCaseClasses)
-    testCaseClass.createSuiteTestCaseObject().call();
+  TestSuiteFactory factory = TestSuiteFactory(
+    description: libraryName,
+    rootTestCases: libMirror.rootTestCases,
+    allSubTestCases: libMirror.allSubTestCases,
+  );
+
+  factory.createSuite().call();
 }

@@ -1,9 +1,62 @@
 
 import 'dart:mirrors';
+import 'package:clean_test/src/annotated_test/test_config.dart';
+
 import './extensions.dart';
 import './test_case_object.dart';
 
-class TestCaseClass {
+abstract class TestSuiteFactoryBase{
+  TestSuiteObject createSuite();
+}
+
+class TestSuiteFactory{
+  TestSuiteFactory({
+    required this.description,
+    required this.rootTestCases,
+    required this.allSubTestCases,
+  });
+
+  final String description;
+  final List<ClassMirror> rootTestCases;
+  final List<ClassMirror> allSubTestCases;
+
+  TestSuiteObject createSuite(){
+    final List<TestCaseClass> testCaseClasses = List.empty(growable: true);
+    final List<TestSuiteObject> suites = List.empty(growable: true);
+    final testCaseClassFactory = TestCaseClassFactory(allSubTestCases);
+
+    for (final root in rootTestCases) 
+      testCaseClasses.add(testCaseClassFactory.createFor(root));
+
+    for(final testCaseClass in testCaseClasses)
+      suites.add(testCaseClass.createSuite());
+
+    return TestSuiteObject(
+      config: TestConfig(description: description),
+      testCaseObjects: suites,
+    );
+  }
+}
+
+class TestCaseClassFactory{
+
+  TestCaseClassFactory(
+    this.allSubTestCases,
+  );
+
+  final List<ClassMirror> allSubTestCases;
+
+  TestCaseClass createFor(ClassMirror selfMirror) {
+    TestCaseClass testCaseClass = TestCaseClass(selfMirror);
+
+    for (final sub in allSubTestCases.of(selfMirror))
+      testCaseClass.addSubClass(createFor(sub));
+
+    return testCaseClass;
+  }
+}
+
+class TestCaseClass implements TestSuiteFactoryBase{
   TestCaseClass(this.selfMirror)
       : subClasses = List.empty(growable: true),
         setUpMirror = selfMirror.setUp,
@@ -21,15 +74,15 @@ class TestCaseClass {
     subClasses.add(subClass);
   }
 
-  TestCaseObjectBase createSuiteTestCaseObject(){
-
+  @override
+  TestSuiteObject createSuite() {
     final List<TestCaseObjectBase> objects = List.empty(growable: true);
 
     for(final testMirror in selfMirror.tests)
-      objects.add(_createSingleTestCaseObject(testMirror));
+      objects.add(_createTestCaseObject(testMirror));
 
     for(final subClass in subClasses)
-      objects.add(subClass.createSuiteTestCaseObject());
+      objects.add(subClass.createSuite());
 
 
     return TestSuiteObject(
@@ -38,7 +91,7 @@ class TestCaseClass {
     );
   }
 
-  TestCaseObjectBase _createSingleTestCaseObject(MethodMirror testMirror){
+  TestCaseObjectBase _createTestCaseObject(MethodMirror testMirror){
     late final InstanceMirror selfInstance;
     
     Future<void> onSetUp()async{
@@ -49,7 +102,6 @@ class TestCaseClass {
 
     Future<void> onTest()async{
       await selfInstance.delegate(Invocation.method(testMirror.simpleName, []));
-      // selfInstance.invoke(testMirror.simpleName, []);
     }
 
     Future<void> onTearDown()async{
@@ -83,20 +135,3 @@ class TestCaseClass {
   
 }
 
-class TestCaseClassFactory{
-
-  TestCaseClassFactory(
-    this.allSubTestCases,
-  );
-
-  final List<ClassMirror> allSubTestCases;
-
-  TestCaseClass createFor(ClassMirror selfMirror) {
-    TestCaseClass testCaseClass = TestCaseClass(selfMirror);
-
-    for (final sub in allSubTestCases.of(selfMirror))
-      testCaseClass.addSubClass(createFor(sub));
-
-    return testCaseClass;
-  }
-}
