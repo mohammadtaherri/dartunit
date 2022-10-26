@@ -59,8 +59,8 @@ class TestSuiteFactoryForClass implements TestSuiteFactory{
 
     return TestSuiteObject(
       testCaseObjects: objects,
-      onSetUpAll: onSetUpAll,
-      onTearDownAll: onTearDownAll,
+      onSetUpAll: _setUpAllMirror == null ? null : onSetUpAll,
+      onTearDownAll: _tearDownAllMirror == null ? null : onTearDownAll,
       config: _selfMirror.extractTestConfigIfPossible()!,
     );
   }

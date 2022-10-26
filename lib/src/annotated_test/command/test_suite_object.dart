@@ -26,16 +26,18 @@ class TestSuiteObject extends TestCommand {
     }
       
     dynamic body(){
-      setUpAll(() async{
-        await _onSetUpAll?.call();
-      });
+      if(_onSetUpAll != null)
+        setUpAll(() async{
+          await _onSetUpAll?.call();
+        });
 
       for (final object in _testCaseObjects) 
         object.call();
 
-      tearDownAll(() async{
-        await _onTearDownAll?.call();
-      });
+      if(_onTearDownAll != null)
+        tearDownAll(() async{
+          await _onTearDownAll?.call();
+        });
     }
 
     group(
