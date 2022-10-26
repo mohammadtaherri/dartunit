@@ -106,8 +106,15 @@ extension DeclarationMirrorEX on DeclarationMirror{
     
     InstanceMirror instance = _getTestConfigSurroundedAnnotation()!;
 
+    String getDescription() {
+      dynamic description = instance.getFieldByName('description');
+      return description == null || description.trim().isEmpty
+          ? simpleName.extractName()
+          : description;
+    }
+
     return TestConfig(
-      description: instance.getFieldByName('description') ?? simpleName.extractName(),
+      description: getDescription(),
       skip: instance.getFieldByName('skip'),
       retry: instance.getFieldByName('retry'),
       testOn: instance.getFieldByName('testOn'),

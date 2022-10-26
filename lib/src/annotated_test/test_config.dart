@@ -1,14 +1,14 @@
 
 class TestConfig{
   const TestConfig({
-    this.description,
+    required this.description,
     this.skip = false,
     this.testOn,
     this.onPlatform,
     this.retry,
   });
 
-  final String? description;
+  final String description;
   final bool skip;
   final String? testOn;
   final Map<String, dynamic>? onPlatform;

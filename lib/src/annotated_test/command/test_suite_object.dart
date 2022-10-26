@@ -18,7 +18,7 @@ class TestSuiteObject extends TestCommand {
 
   @override
   void call() {
-    if(_config.description!.isEmpty){
+    if(_config.description.isEmpty){
       for (final object in _testCaseObjects) 
         object.call();
 
