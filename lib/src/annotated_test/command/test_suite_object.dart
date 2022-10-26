@@ -15,9 +15,16 @@ class TestSuiteObject extends TestCommand {
   final List<TestCommand> _testCaseObjects;
   final AsyncCallback? _onSetUpAll;
   final AsyncCallback? _onTearDownAll;
-  
+
   @override
   void call() {
+    if(_config.description!.isEmpty){
+      for (final object in _testCaseObjects) 
+        object.call();
+
+      return;
+    }
+      
     dynamic body(){
       setUpAll(() async{
         await _onSetUpAll?.call();
