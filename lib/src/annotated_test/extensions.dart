@@ -28,6 +28,13 @@ extension LibraryMirrorEx on LibraryMirror {
       if (declaration.isSubTestCaseClass)
         classes.add(declaration as ClassMirror);
 
+    classes.sort((a, b){
+      if(a.location!.sourceUri != b.location!.sourceUri)
+        return -1;
+
+      return a.location!.line.compareTo(b.location!.line);
+    });
+
     return classes;
   }
 }
