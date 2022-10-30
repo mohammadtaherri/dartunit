@@ -9,7 +9,7 @@ void runTestsByLibraryName(String name){
   _runTests(_findLibraryByName(name));
 }
 
-Future<void> runTestsByLibraryPath({required String path}) async{
+Future<void> runTestsByLibraryPath(String path) async{
   _runTests(await _findLibraryByPath(path));
 }
 
