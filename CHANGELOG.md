@@ -1,3 +1,7 @@
+## 1.0.0+2
+
+- docs: update README
+
 ## 1.0.0+1
 
 - docs: update README
