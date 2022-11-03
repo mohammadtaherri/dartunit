@@ -15,10 +15,10 @@ class TestCaseObject extends TestCommand {
   final AsyncCallback _onSetUp;
   final AsyncCallback _onTest;
   final AsyncCallback? _onTearDown;
-  
+
   @override
   void call() {
-    dynamic body() async{
+    dynamic body() async {
       await _onSetUp.call();
       await _onTest.call();
       await _onTearDown?.call();

@@ -1,5 +1,4 @@
-
-class TestConfig{
+class TestConfig {
   const TestConfig({
     required this.description,
     this.skip,

@@ -18,27 +18,27 @@ class TestSuiteObject extends TestCommand {
 
   @override
   void call() {
-    if(_config.description.isEmpty){
-      for (final object in _testCaseObjects){
+    if (_config.description.isEmpty) {
+      for (final object in _testCaseObjects) {
         object.call();
       }
-      
+
       return;
     }
-      
-    dynamic body(){
-      if(_onSetUpAll != null){
-        setUpAll(() async{
+
+    dynamic body() {
+      if (_onSetUpAll != null) {
+        setUpAll(() async {
           await _onSetUpAll?.call();
         });
       }
-        
-      for (final object in _testCaseObjects){
+
+      for (final object in _testCaseObjects) {
         object.call();
       }
-        
-      if(_onTearDownAll != null){
-        tearDownAll(() async{
+
+      if (_onTearDownAll != null) {
+        tearDownAll(() async {
           await _onTearDownAll?.call();
         });
       }

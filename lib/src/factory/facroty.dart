@@ -9,6 +9,6 @@ import '../test_config.dart';
 part './test_suite_factory_for_library.dart';
 part './test_suite_factory_for_class.dart';
 
-abstract class TestSuiteFactory{
+abstract class TestSuiteFactory {
   TestSuiteObject createSuite();
 }

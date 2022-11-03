@@ -1,29 +1,25 @@
-
-
 import 'dart:io';
 import 'dart:mirrors';
 
 import 'factory/facroty.dart';
 
-void runTestsByLibraryName(String name){
+void runTestsByLibraryName(String name) {
   _runTests(_findLibraryByName(name));
 }
 
-Future<void> runTestsByLibraryPath(String path) async{
+Future<void> runTestsByLibraryPath(String path) async {
   _runTests(await _findLibraryByPath(path));
 }
 
 Future<void> _runTests(LibraryMirror library) async {
-  TestSuiteFactoryForLibrary(libraryMirror: library)
-      .createSuite()
-      .call();
+  TestSuiteFactoryForLibrary(libraryMirror: library).createSuite().call();
 }
 
-LibraryMirror _findLibraryByName(String name){
+LibraryMirror _findLibraryByName(String name) {
   return currentMirrorSystem().findLibrary(Symbol(name));
 }
 
-Future<LibraryMirror> _findLibraryByPath(String path) async{
+Future<LibraryMirror> _findLibraryByPath(String path) async {
   return await currentMirrorSystem().isolate.loadUri(_createUri(path));
 }
 
@@ -34,4 +30,3 @@ Uri _createUri(String libraryPath) {
 
   return Uri.file('$cwd$testPath$libraryPath', windows: Platform.isWindows);
 }
-

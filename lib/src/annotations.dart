@@ -1,5 +1,4 @@
-
-class Root{
+class Root {
   const Root();
 }
 

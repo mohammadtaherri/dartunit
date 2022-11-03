@@ -9,6 +9,6 @@ part './test_suite_object.dart';
 
 typedef AsyncCallback = Future<void> Function();
 
-abstract class TestCommand{
+abstract class TestCommand {
   void call();
 }
