@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'dart:mirrors';
 
-import './factory/facroty.dart';
+import 'factory/facroty.dart';
 
 void runTestsByLibraryName(String name){
   _runTests(_findLibraryByName(name));
