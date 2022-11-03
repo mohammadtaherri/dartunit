@@ -270,4 +270,12 @@ class StackEmptyException implements Exception{}
 class IllegalCapacityException implements Exception{}
 ```
 
+Then run tests with following command:
+
+```dart test test/your_file.dart  --reporter=expanded```
+
+
+![photo_2022-11-04_01-43-19](https://user-images.githubusercontent.com/44123678/199844572-c187ccdf-4b5a-4f11-95f8-29ecbd0c5a11.jpg)
+
+
 
