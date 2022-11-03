@@ -1,22 +1,20 @@
 part of factory;
 
 class TestSuiteFactoryForLibrary implements TestSuiteFactory {
-  TestSuiteFactoryForLibrary({required String libraryName})
-      : _libraryName = libraryName;
+  TestSuiteFactoryForLibrary({required LibraryMirror libraryMirror})
+      : _libraryMirror = libraryMirror;
 
-  final String _libraryName;
+  final LibraryMirror _libraryMirror;
 
   @override
   TestSuiteObject createSuite() {
-    MirrorSystem mirrorSystem = currentMirrorSystem();
-    LibraryMirror libMirror = mirrorSystem.findLibrary(Symbol(_libraryName));
     final List<TestSuiteObject> suites = List.empty(growable: true);
 
-    for (final root in libMirror.rootTestCases)
+    for (final root in _libraryMirror.rootTestCases)
       suites.add(
         TestSuiteFactoryForClass.create(
           root,
-          libMirror.subTestCases,
+          _libraryMirror.subTestCases,
         ).createSuite(),
       );
 

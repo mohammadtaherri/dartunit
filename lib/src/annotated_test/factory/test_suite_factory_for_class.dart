@@ -55,7 +55,8 @@ class TestSuiteFactoryForClass implements TestSuiteFactory{
     for (final testMirror in _selfMirror.tests)
       objects.add(_createTestCaseObject(testMirror));
 
-    for (final child in _children) objects.add(child.createSuite());
+    for (final child in _children) 
+      objects.add(child.createSuite());
 
     return TestSuiteObject(
       testCaseObjects: objects,
