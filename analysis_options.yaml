@@ -15,14 +15,14 @@ include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
 
-linter:
-  rules:
-    - curly_braces_in_flow_control_structures
+# linter:
+  # rules:
+    # - curly_braces_in_flow_control_structures
     # - camel_case_types
 
-analyzer:
-  errors: 
-    curly_braces_in_flow_control_structures: ignore
+# analyzer:
+  # errors: 
+    # curly_braces_in_flow_control_structures: ignore
   # exclude:
 #     - path/to/excluded/files/**
 
