@@ -1,4 +1,4 @@
-name: clean_test
+name: dartunit
 description: A Dart package for writing clean unit tests.
 version: 1.0.0
 homepage: https://github.com/mohammadtaherri/clean_test
