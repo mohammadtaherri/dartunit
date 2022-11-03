@@ -1,5 +1,5 @@
 name: dartunit
-description: A Dart package to write unit tests based on xUnit patterns.
+description: A Dart package for writing unit tests based on xUnit patterns.This package helps you implement unit test patterns and write unit tests in a cleaner way. 
 version: 1.0.0+1
 homepage: https://github.com/mohammadtaherri/dartunit
 
