@@ -1,5 +1,5 @@
 name: dartunit
-description: A Dart package for writing clean unit tests.
+description: A Dart package to write unit tests based on xUnit patterns.
 version: 1.0.0
 homepage: https://github.com/mohammadtaherri/clean_test
 
