@@ -14,24 +14,29 @@ extension LibraryMirrorEx on LibraryMirror {
   List<ClassMirror> get rootTestCases {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for (final declaration in declarations.values)
-      if (declaration.isRootTestCaseClass)
+    for (final declaration in declarations.values){
+      if (declaration.isRootTestCaseClass){
         classes.add(declaration as ClassMirror);
-
+      }
+    }
+      
     return classes;
   }
 
   List<ClassMirror> get subTestCases {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for (final declaration in declarations.values)
-      if (declaration.isSubTestCaseClass)
+    for (final declaration in declarations.values){
+      if (declaration.isSubTestCaseClass){
         classes.add(declaration as ClassMirror);
+      }
+    }   
 
     classes.sort((a, b){
-      if(a.location!.sourceUri != b.location!.sourceUri)
+      if(a.location!.sourceUri != b.location!.sourceUri){
         return -1;
-
+      }
+        
       return a.location!.line.compareTo(b.location!.line);
     });
 
@@ -100,17 +105,20 @@ extension DeclarationMirrorEX on DeclarationMirror{
   bool get hasTearDownAllAnnotation => _hasAnnotationOfType<TearDownAll>();
 
   bool _hasAnnotationOfType<T>(){
-    for(final annotation in metadata)
-      if(annotation.type.reflectedType == T)
+    for(final annotation in metadata){
+      if(annotation.type.reflectedType == T){
         return true;
-
+      }
+    }
+      
     return false;
   }
 
   TestConfig? extractTestConfigIfPossible(){
-    if(!hasTestAnnotation && !hasTestCaseAnnotation)
+    if(!hasTestAnnotation && !hasTestCaseAnnotation){
       return null;
-    
+    }
+      
     InstanceMirror instance = _getTestConfigSurroundedAnnotation()!;
 
     String getDescription() {
@@ -130,16 +138,20 @@ extension DeclarationMirrorEX on DeclarationMirror{
   }
 
   InstanceMirror? _getTestConfigSurroundedAnnotation() {
-    if (!isMethod && !isClass) 
+    if (!isMethod && !isClass) {
       return null;
-
-    if (!hasAnnotation) 
+    }
+      
+    if (!hasAnnotation){
       return null;
-
-    for (final a in metadata)
-      if (a.type.reflectedType == TestCase || a.type.reflectedType == Test) 
-          return a;
-
+    }
+      
+    for (final a in metadata){
+      if (a.type.reflectedType == TestCase || a.type.reflectedType == Test){
+        return a;
+      }
+    }
+      
     return null;
   }
 }
@@ -149,49 +161,60 @@ extension ClassMirrorEX on ClassMirror {
   List<MethodMirror> get tests {
     List<MethodMirror> methods = List.empty(growable: true);
 
-    for (final declaration in declarations.values)
-      if(declaration.isTestMethod)
+    for (final declaration in declarations.values){
+      if(declaration.isTestMethod){
         methods.add(declaration as MethodMirror);
-
+      }
+    }
+      
     return methods;
   }
 
   MethodMirror? get setUp {
-    for (final declaration in declarations.values)
-      if(declaration.isSetUpMethod)
+    for (final declaration in declarations.values){
+      if(declaration.isSetUpMethod){
         return declaration as MethodMirror;
-
+      }
+    }
+      
     return null;
   }
 
   MethodMirror? get tearDown {
-    for (final declaration in declarations.values)
-      if(declaration.isTearDownMethod)
+    for (final declaration in declarations.values){
+      if(declaration.isTearDownMethod){
         return declaration as MethodMirror;
+      }
+    }   
 
     return null;
   }
 
   MethodMirror? get setUpAll {
-    for (final declaration in declarations.values)
-      if(declaration.isSetUpAllMethod)
+    for (final declaration in declarations.values){
+      if(declaration.isSetUpAllMethod){
         return declaration as MethodMirror;
-
+      }
+    }
+      
     return null;
   }
 
   MethodMirror? get tearDownAll {
-    for (final declaration in declarations.values)
-      if(declaration.isTearDownAllMethod)
+    for (final declaration in declarations.values){
+      if(declaration.isTearDownAllMethod){
         return declaration as MethodMirror;
-
+      }
+    }
+      
     return null;
   }
 
   bool isSubTypeOf(ClassMirror parent){
-    if(!isClass)
+    if(!isClass){
       return false;
-
+    }
+      
     return superclass?.reflectedType == parent.reflectedType;
   }
 }
@@ -200,9 +223,12 @@ extension ClassMirrorListEx on List<ClassMirror> {
   List<ClassMirror> of(ClassMirror parent) {
     List<ClassMirror> classes = List.empty(growable: true);
 
-    for (final classMirror in this)
-      if (classMirror.isSubTypeOf(parent)) classes.add(classMirror);
-
+    for (final classMirror in this){
+      if (classMirror.isSubTypeOf(parent)){
+        classes.add(classMirror);
+      } 
+    }
+      
     return classes;
   }
 }

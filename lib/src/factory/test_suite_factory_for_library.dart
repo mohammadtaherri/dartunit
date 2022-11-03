@@ -10,14 +10,15 @@ class TestSuiteFactoryForLibrary implements TestSuiteFactory {
   TestSuiteObject createSuite() {
     final List<TestSuiteObject> suites = List.empty(growable: true);
 
-    for (final root in _libraryMirror.rootTestCases)
+    for (final root in _libraryMirror.rootTestCases){
       suites.add(
         TestSuiteFactoryForClass.create(
           root,
           _libraryMirror.subTestCases,
         ).createSuite(),
       );
-
+    }
+      
     return TestSuiteObject(
       config: TestConfig(description: ''),
       testCaseObjects: suites,
